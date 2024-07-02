@@ -60,9 +60,16 @@ def update_contact(user_id):
 
 
 # this function deletes the created contacts from the database
-@app.route('/delete_contact', methods=['DELETE'])
+@app.route('/delete_contact/<int:id>', methods=["OPTIONS", "DELETE"])
 def delete_contact(user_id):
     contact = Contact.query.get(user_id)
+
+    if request.method == 'OPTIONS':
+        response = app.make_response('')
+        response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
+        response.headers['Access-Control-Allow-Methods'] = 'DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+        return response
 
     if not contact:
         return jsonify({"message": "contact not found"}), 404
